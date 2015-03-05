@@ -4,14 +4,16 @@ module.exports = function(parent, options) {
   var verbose = options.verbose
   var controllersDir = __dirname + '/../app/controllers/';
   var routesDir = __dirname + '/routes/';
+  var viewsDir = __dirname + '/../views/'
 
   fs.readdirSync(controllersDir).forEach(function(name) {
     verbose && console.log('Controller name: %s \n', name);
-
+    name = name.replace(/\.[^/.]+$/, "");
     var app = express();
     var controller = require(controllersDir + name);
     var routes = require(routesDir + name)
     var prefix = routes.prefix || '';
+    var single = routes.single || false;
     var method;
     var path;
 
@@ -34,7 +36,7 @@ module.exports = function(parent, options) {
         break;
         case 'index':
           method = 'get';
-          path = '/' + name + 's';
+          path = '/' + name + (single ? '' : 's');
         break;
         case 'new':
           method = 'get';
@@ -61,7 +63,9 @@ module.exports = function(parent, options) {
     path = prefix + path
     app[method](path, handler);
 
-    verbose && console.log('  %s %s -> %s', method.upperCase(), path, action);
+    app.set('views', viewsDir + name);
+
+    verbose && console.log('  %s %s -> %s', method.toUpperCase(), path, action);
 
     parent.use(app);
   });

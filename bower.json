@@ -1,0 +1,19 @@
+{
+  "name": "whiteboard",
+  "version": "0.0.0",
+  "authors": [
+    "Vadim Gribanov <v1m@tut.by>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react": "~0.12.2"
+  }
+}
