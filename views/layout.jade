@@ -2,8 +2,8 @@ doctype html
 html
   head
     title= title
-    script(src="/dist/vendors.js")
+    script(src="#{webpack_asset('vendors')}")
   body
     block content
 
-    script(src="/dist/main.js")
+    script(src="#{webpack_asset('main')}")

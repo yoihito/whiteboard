@@ -1,6 +1,8 @@
 var bower_dir = __dirname + '/bower_components';
 var path = require('path');
 var webpack = require('webpack');
+var SaveHashes = require('assets-webpack-plugin');
+
 var config = {
   addVendor: function (name, path) {
     this.resolve.alias[name] = path;
@@ -17,7 +19,7 @@ var config = {
 
   output: {
     path: path.join(__dirname, 'public/dist'),
-    filename: 'main.js',
+    filename: '[name]-[chunkhash].js',
     publicPath: '/dist/',
     pathinfo: true
   },
@@ -36,14 +38,15 @@ var config = {
     }],
     loaders: [
       { test: /\.js$/, loader: 'react-hot!jsx-loader?harmony'},
-      { test: /\.sass$/, loader: 'style-loader!css-loader!sass-loader'},
+      { test: /\.(sass|scss)$/, loader: 'style-loader!css-loader!sass-loader'},
       { test: /\.css$/, loader: 'style-loader!css-loader' },
-      { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192&name=[name].[ext]'}
+      { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192&name=[name].[ext]'},
     ]
   },
 
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js'),
+    new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors-[chunkhash].js'),
+    new SaveHashes({path: path.join(__dirname, 'config')})
   ]
 };
 

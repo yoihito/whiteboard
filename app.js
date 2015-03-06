@@ -17,11 +17,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// webpack hashes support
+var webpackAssets = require('express-webpack-assets');
+app.use(webpackAssets('./config/webpack-assets.json'));
+
 var routes = require('./config/routes')
 routes(app, {verbose: !module.parent});
 
 
+// development settings
+
 if (app.get('env') === 'development') {
+
+  // on-change reload assets
   var webpackDevMiddleware = require("webpack-dev-middleware");
   var webpack = require('webpack');
   var config = require('./webpack.config.js');
