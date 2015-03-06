@@ -20,13 +20,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 var routes = require('./config/routes')
 routes(app, {verbose: !module.parent});
 
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
 
 if (app.get('env') === 'development') {
+  var webpackDevMiddleware = require("webpack-dev-middleware");
+  var webpack = require('webpack');
+  var config = require('./webpack.config.js');
+  var compiler = webpack(config);
+  app.use(webpackDevMiddleware(compiler, {
+    publicPath: '/dist/',
+    stats: {
+      colors: true
+    }
+  }));
+
   app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
@@ -35,6 +41,13 @@ if (app.get('env') === 'development') {
     });
   });
 }
+
+
+app.use(function(req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
 
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
