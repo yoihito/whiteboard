@@ -4,17 +4,13 @@ var webpack = require('webpack');
 var SaveHashes = require('assets-webpack-plugin');
 
 var config = {
-  addVendor: function (name, path) {
-    this.resolve.alias[name] = path;
-    this.module.noParse.push(new RegExp('^' + name + '$'));
-  },
 
   context: __dirname,
   cache: true,
   debug: true,
   entry: {
     main: ['./assets/javascripts/main'],
-    vendors: ['react']
+    vendors: ['react', 'lodash', 'normalize.css']
   },
 
   output: {
@@ -26,7 +22,10 @@ var config = {
 
   resolve: {
     extensions: ['', '.js'],
-    alias: {}
+    root: [
+      path.join(__dirname, "bower_components"),
+      path.join(__dirname, "node_modules")
+    ]
   },
 
   module: {
@@ -45,11 +44,13 @@ var config = {
   },
 
   plugins: [
+    new webpack.ResolverPlugin(
+      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
+    ),
     new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors-[chunkhash].js'),
     new SaveHashes({path: path.join(__dirname, 'config')})
   ]
 };
 
-config.addVendor('react',  bower_dir + '/react/react.js');
 
 module.exports = config;

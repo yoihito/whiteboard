@@ -27,7 +27,8 @@
     "object-assign": "~2.0.0",
     "express-webpack-assets": "0.0.1",
     "bootstrap": "~3.3.2",
-    "bootstrap-webpack": "0.0.3"
+    "bootstrap-webpack": "0.0.3",
+    "normalize.css": "~3.0.2"
   },
   "devDependencies": {
     "grunt": "~0.4.5",
