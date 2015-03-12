@@ -1,11 +1,10 @@
 //main
 require('normalize.css');
-require('../stylesheets/main.css');
+require('../stylesheets/main.sass');
 var React = require('react');
-var Canvas = require('./components/Canvas');
-
+var Whiteboard = require('./components/Whiteboard');
 
 React.render(
-  <Canvas/>,
+  <Whiteboard/>,
   document.getElementById('main')
 );

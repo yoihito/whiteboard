@@ -1,30 +1,66 @@
 var React = require('react');
-var assign = require('object-assign');
 var _ = require('lodash');
+var CanvasStore = require('../stores/CanvasStore');
+var CanvasActions = require('../actions/CanvasActions');
+
+
+function getStateFromStore() {
+  return {
+    actions: CanvasStore.getAllActions(),
+    mouseDown: CanvasStore.getLeftButtonState()
+  }
+}
 
 var Canvas = React.createClass({
 
+  getInitialState: function() {
+    return getStateFromStore();
+  },
+
   componentDidMount: function() {
     this.canvas = this.getDOMNode();
-    var canvasStyle = window.getComputedStyle(this.canvas, null)
-    this.canvas.width = canvasStyle.width.replace('px','');
-    this.canvas.height = canvasStyle.height.replace('px','');
     this.ctx = this.canvas.getContext("2d");
     this.ctx.lineCap = "round";
     this.ctx.lineJoin = "round";
     this.ctx.lineWidth = 3;
-    this.mouseDown = false;
-    this.points = [];
+    var canvasStyle = window.getComputedStyle(this.canvas, null)
+    this.canvas.width = canvasStyle.width.replace('px','');
+    this.canvas.height = canvasStyle.height.replace('px','');
+
+    CanvasStore.addChangeListener(this._onChange);
+  },
+
+  componentWillUnmount: function() {
+    CanvasStore.removeChangeListener(this._onChange);
   },
 
   render: function() {
+    if (this.state.actions.length > 0) {
+      var actions = this.state.actions;
+      _.each(actions, (function(that) {
+        return function (action) {
+          var points = action.points;
+          that.ctx.beginPath();
+          that.ctx.moveTo(points[0].x, points[0].y);
+          _.each(points, function(point) {
+            that.ctx.lineTo(point.x, point.y);
+          });
+          that.ctx.stroke();
+        }
+      })(this));
+
+    }
     return (
       <canvas
         id="board"
+        onTouchStart={this._onTouchStart}
         onMouseDown={this._onMouseDown}
         onMouseMove={this._onMouseMove}
-        onMouseUp={this._onMouseUp}>
-
+        onTouchMove={this._onTouchMove}
+        onMouseUp={this._onMouseUp}
+        onMouseLeave={this._onMouseUp}
+        onTouchEnd={this._onTouchEnd}
+      >
       </canvas>
     );
   },
@@ -37,34 +73,32 @@ var Canvas = React.createClass({
     };
   },
 
-  _redraw: function () {
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.points[0].x, this.points[0].y);
-    _.each(this.points, (function(that) {
-      return function(point) {
-        that.ctx.lineTo(point.x, point.y);
-      }
-    })(this));
-    this.ctx.stroke();
+  _onChange: function() {
+    this.setState(getStateFromStore());
+  },
+
+  _onTouchStart: function(touchEvent) {
+    this._onMouseDown(touchEvent.touches.item(0));
+  },
+
+  _onTouchMove: function(touchEvent) {
+    this._onMouseMove(touchEvent.touches.item(0));
+  },
+
+  _onTouchEnd: function(touchEvent) {
+    this._onMouseUp(touchEvent.touches.item(0));
   },
 
   _onMouseDown: function(event) {
-    var position = this._mousePosition(event);
-    this.mouseDown = true;
-    this.points.push(position);
+    CanvasActions.beginDrawing(this._mousePosition(event));
   },
 
   _onMouseMove: function(event) {
-    if (this.mouseDown) {
-      var position = this._mousePosition(event);
-      this.points.push(position);
-      this._redraw();
-    }
+    CanvasActions.moveCursor(this._mousePosition(event));
   },
 
   _onMouseUp: function(event) {
-    this.points = [];
-    this.mouseDown = false;
+    CanvasActions.endDrawing();
   }
 
 })

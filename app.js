@@ -21,6 +21,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 var webpackAssets = require('express-webpack-assets');
 app.use(webpackAssets('./config/webpack-assets.json'));
 
+
+var socket = require('./app/socket.js')
 var routes = require('./config/routes')
 routes(app, {verbose: !module.parent});
 
