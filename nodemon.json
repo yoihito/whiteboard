@@ -5,7 +5,7 @@
   "env": {
     "NODE_ENV": "development"
   },
-  "ext": "js css json jsx",
+  "ext": "js json",
   "ignore" : [
     "assets",
     "config/webpack-assets.json"

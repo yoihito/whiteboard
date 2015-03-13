@@ -20,9 +20,6 @@ var Canvas = React.createClass({
   componentDidMount: function() {
     this.canvas = this.getDOMNode();
     this.ctx = this.canvas.getContext("2d");
-    this.ctx.lineCap = "round";
-    this.ctx.lineJoin = "round";
-    this.ctx.lineWidth = 3;
     var canvasStyle = window.getComputedStyle(this.canvas, null)
     this.canvas.width = canvasStyle.width.replace('px','');
     this.canvas.height = canvasStyle.height.replace('px','');
@@ -41,6 +38,9 @@ var Canvas = React.createClass({
         return function (action) {
           var points = action.points;
           that.ctx.beginPath();
+          that.ctx.lineCap = "round";
+          that.ctx.lineJoin = "round";
+          that.ctx.lineWidth = 5;
           that.ctx.moveTo(points[0].x, points[0].y);
           _.each(points, function(point) {
             that.ctx.lineTo(point.x, point.y);

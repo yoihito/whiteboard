@@ -6,7 +6,6 @@ var Whiteboard = React.createClass({
   render: function() {
     return (
       <div className="app">
-        <Toolbar />
         <Canvas />
       </div>
     );
