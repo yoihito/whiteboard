@@ -34,21 +34,21 @@ var Canvas = React.createClass({
   render: function() {
     if (this.state.actions.length > 0) {
       var actions = this.state.actions;
-      _.each(actions, (function(that) {
-        return function (action) {
+      var ctx = this.ctx;
+      _.each(actions, function (action) {
           var points = action.points;
-          that.ctx.beginPath();
-          that.ctx.lineCap = "round";
-          that.ctx.lineJoin = "round";
-          that.ctx.lineWidth = 5;
-          that.ctx.moveTo(points[0].x, points[0].y);
-          _.each(points, function(point) {
-            that.ctx.lineTo(point.x, point.y);
-          });
-          that.ctx.stroke();
-        }
-      })(this));
 
+          ctx.beginPath();
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.lineWidth = 5;
+          ctx.moveTo(points[0].x, points[0].y);
+          ctx.fillRect(points[0].x-5, points[0].y-5, 5, 5);
+          _.each(points, function(point) {
+            ctx.lineTo(point.x, point.y);
+          });
+          ctx.stroke();
+      });
     }
     return (
       <canvas
