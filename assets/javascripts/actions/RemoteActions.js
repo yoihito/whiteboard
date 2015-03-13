@@ -3,7 +3,6 @@ var ActionTypes = require('../constants/AppConstants').SocketActionTypes;
 
 var RemoteActions = {
   remoteBeginDrawing: function(message) {
-    console.log(message);
     AppDispatcher.dispatch({
       type: ActionTypes.REMOTE_BEGIN_DRAWING,
       data: message

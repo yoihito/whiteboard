@@ -60,7 +60,6 @@ var CanvasStore = assign({}, EventEmitter.prototype, {
       break;
 
       case SocketActionTypes.REMOTE_BEGIN_DRAWING:
-        console.log(action);
         var message = action.data;
         _actions.push({
           points: [{x: message.data.x, y: message.data.y}]
@@ -72,7 +71,7 @@ var CanvasStore = assign({}, EventEmitter.prototype, {
       case SocketActionTypes.REMOTE_MOVE_CURSOR:
         var message = action.data;
         var actionId = _remotes[message.from];
-        if (actionId) {
+        if (typeof actionId !== "undefined") {
           _actions[actionId].points.push({x: message.data.x, y: message.data.y});
           CanvasStore.emitChange();
         }
