@@ -21,20 +21,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 var webpackAssets = require('express-webpack-assets');
 app.use(webpackAssets('./config/webpack-assets.json'));
 
-
 var socket = require('./app/socket.js')
 var routes = require('./config/routes')
 routes(app, {verbose: !module.parent});
 
-
 // development settings
 
 if (app.get('env') === 'development') {
-
   // on-change reload assets
   var webpackDevMiddleware = require("webpack-dev-middleware");
   var webpack = require('webpack');
-  var config = require('./webpack.config.js');
+  var config = require('./dev.webpack.config.js');
   var compiler = webpack(config);
   app.use(webpackDevMiddleware(compiler, {
     publicPath: '/dist/',

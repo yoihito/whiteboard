@@ -47,8 +47,6 @@ var config = {
     new webpack.ResolverPlugin(
       new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
     ),
-    new webpack.optimize.UglifyJsPlugin(),
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors-[chunkhash].js'),
     new SaveHashes({path: path.join(__dirname, 'config')})
   ]

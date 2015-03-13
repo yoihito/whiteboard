@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "build-front": "rm -f ./public/javascripts/* && rm -f ./public/stylesheets/* && webpack --progress"
+    "build-front": "webpack --progress"
   },
   "development-webpack": "dev.webpack.config.js",
   "production-webpack": "webpack.config.js",
@@ -18,7 +18,6 @@
     "serve-favicon": "~2.2.0",
     "socket.io": "~1.3.5",
     "bower": "~1.3.12",
-    "stylus": "~0.50.0",
     "lodash": "~3.3.1",
     "react": "~0.12.2",
     "flux": "~2.0.1",
@@ -26,8 +25,6 @@
     "es6-promise": "~2.0.1",
     "object-assign": "~2.0.0",
     "express-webpack-assets": "0.0.1",
-    "bootstrap": "~3.3.2",
-    "bootstrap-webpack": "0.0.3",
     "normalize.css": "~3.0.2",
     "async": "~0.9.0",
     "sequelize": "~2.0.4",
