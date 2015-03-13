@@ -9,35 +9,46 @@ var SocketActionTypes = keyMirror({
 
 var _sockets = [];
 
+function emitAction(socket, action, data) {
+  return function (targetSocket) {
+    if (socket.id !== targetSocket.id) {
+      targetSocket.emit(action, data);
+    }
+  }
+}
+
 var SockServer = function(server) {
   io = require('socket.io')(server);
   io.on('connection', function (socket) {
     _sockets.push(socket);
     socket.on(SocketActionTypes.REMOTE_BEGIN_DRAWING, function (message) {
-      async.each(_sockets, function(targetSocket) {
-        targetSocket.emit(SocketActionTypes.REMOTE_BEGIN_DRAWING, {
-          from: socket.id,
-          point: message
-        });
-      })
+      async.each(_sockets,
+        emitAction(
+          socket,
+          SocketActionTypes.REMOTE_BEGIN_DRAWING,
+          {from: socket.id, point: message}
+        )
+      );
     });
 
     socket.on(SocketActionTypes.REMOTE_MOVE_CURSOR, function (message) {
-      async.each(_sockets, function(targetSocket) {
-        targetSocket.emit(SocketActionTypes.REMOTE_MOVE_CURSOR, {
-          from: socket.id,
-          point: message
-        });
-      })
+      async.each(_sockets,
+        emitAction(
+          socket,
+          SocketActionTypes.REMOTE_MOVE_CURSOR,
+          {from: socket.id, point: message}
+        )
+      );
     });
 
     socket.on(SocketActionTypes.REMOTE_END_DRAWING, function (message) {
-      async.each(_sockets, function(targetSocket) {
-        targetSocket.emit(SocketActionTypes.REMOTE_END_DRAWING, {
-          from: socket.id,
-          point: message
-        });
-      })
+      async.each(_sockets,
+        emitAction(
+          socket,
+          SocketActionTypes.REMOTE_END_DRAWING,
+          {from: socket.id, point: message}
+        )
+      );
     });
 
   });
