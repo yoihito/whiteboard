@@ -9,6 +9,30 @@ var SocketActionTypes = AppConstants.SocketActionTypes;
 var _actions = [];
 var _remotes = {};
 var _mouseDown = false;
+var _localActionId;
+
+function getLastActionId() {
+  return _actions.length - 1;
+}
+
+function newAction(point) {
+  _actions.push({
+    points: [point]
+  });
+}
+
+function pushPointToAction(actionId, point) {
+  _actions[actionId].points.push(point);
+}
+
+function updateLocalAction() {
+  _localActionId = getLastActionId()
+}
+
+function updateRemotesAction(remoteId) {
+  _remotes[remoteId] = getLastActionId();
+}
+
 
 var CanvasStore = assign({}, EventEmitter.prototype, {
 
@@ -24,10 +48,6 @@ var CanvasStore = assign({}, EventEmitter.prototype, {
     return _mouseDown;
   },
 
-  push: function(action) {
-    _actions.push(action);
-  },
-
   addChangeListener: function(callback) {
     this.on(CHANGE_EVENT, callback);
   },
@@ -41,15 +61,14 @@ var CanvasStore = assign({}, EventEmitter.prototype, {
 
       case ActionTypes.BEGIN_DRAWING:
         _mouseDown = true;
-        _actions.push({
-          points: [{x: action.x, y: action.y}]
-        });
+        newAction({x: action.x, y: action.y});
+        updateLocalAction();
         CanvasStore.emitChange();
       break;
 
       case ActionTypes.MOVE_CURSOR:
-        if (_mouseDown) {
-          _actions[_actions.length - 1].points.push({x: action.x, y: action.y});
+        if (CanvasStore.getLeftButtonState()) {
+          pushPointToAction(_localActionId, {x: action.x, y: action.y});
           CanvasStore.emitChange();
         }
       break;
@@ -60,25 +79,23 @@ var CanvasStore = assign({}, EventEmitter.prototype, {
       break;
 
       case SocketActionTypes.REMOTE_BEGIN_DRAWING:
-        var message = action.data;
-        _actions.push({
-          points: [{x: message.data.x, y: message.data.y}]
-        });
-        _remotes[message.from] = _actions.length - 1;
+        var message = action.message;
+        newAction(message.point);
+        updateRemotesAction(message.from);
         CanvasStore.emitChange();
       break;
 
       case SocketActionTypes.REMOTE_MOVE_CURSOR:
-        var message = action.data;
-        var actionId = _remotes[message.from];
-        if (typeof actionId !== "undefined") {
-          _actions[actionId].points.push({x: message.data.x, y: message.data.y});
+        var message = action.message;
+        var remotesActionId = _remotes[message.from];
+        if (typeof remotesActionId !== "undefined") {
+          pushPointToAction(remotesActionId, message.point);
           CanvasStore.emitChange();
         }
       break;
 
       case SocketActionTypes.REMOTE_END_DRAWING:
-        var message = action.data;
+        var message = action.message;
         delete _remotes[message.from];
       break;
 

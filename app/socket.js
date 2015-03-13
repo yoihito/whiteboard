@@ -17,7 +17,7 @@ var SockServer = function(server) {
       async.each(_sockets, function(targetSocket) {
         targetSocket.emit(SocketActionTypes.REMOTE_BEGIN_DRAWING, {
           from: socket.id,
-          data: message
+          point: message
         });
       })
     });
@@ -26,7 +26,7 @@ var SockServer = function(server) {
       async.each(_sockets, function(targetSocket) {
         targetSocket.emit(SocketActionTypes.REMOTE_MOVE_CURSOR, {
           from: socket.id,
-          data: message
+          point: message
         });
       })
     });
@@ -35,7 +35,7 @@ var SockServer = function(server) {
       async.each(_sockets, function(targetSocket) {
         targetSocket.emit(SocketActionTypes.REMOTE_END_DRAWING, {
           from: socket.id,
-          data: message
+          point: message
         });
       })
     });

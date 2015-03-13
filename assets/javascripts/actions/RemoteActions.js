@@ -5,21 +5,21 @@ var RemoteActions = {
   remoteBeginDrawing: function(message) {
     AppDispatcher.dispatch({
       type: ActionTypes.REMOTE_BEGIN_DRAWING,
-      data: message
+      message: message
     });
   },
 
   remoteMoveCursor: function(message) {
     AppDispatcher.dispatch({
       type: ActionTypes.REMOTE_MOVE_CURSOR,
-      data: message
+      message: message
     });
   },
 
   remoteEndDrawing: function(message) {
     AppDispatcher.dispatch({
       type: ActionTypes.REMOTE_END_DRAWING,
-      data: message
+      message: message
     });
   }
 };
