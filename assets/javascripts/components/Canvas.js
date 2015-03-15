@@ -8,7 +8,7 @@ function getStateFromStore() {
   return {
     actions: CanvasStore.getAllActions(),
     mouseDown: CanvasStore.getLeftButtonState()
-  }
+  };
 }
 
 var Canvas = React.createClass({
@@ -20,18 +20,22 @@ var Canvas = React.createClass({
   componentDidMount: function() {
     this.canvas = this.getDOMNode();
     this.ctx = this.canvas.getContext("2d");
-    var canvasStyle = window.getComputedStyle(this.canvas, null)
-    this.canvas.width = canvasStyle.width.replace('px','');
-    this.canvas.height = canvasStyle.height.replace('px','');
-
+    this._onResize();
     CanvasStore.addChangeListener(this._onChange);
+    window.addEventListener('resize', this._onResize);
   },
 
   componentWillUnmount: function() {
     CanvasStore.removeChangeListener(this._onChange);
+    window.removeEventListener('resize', this._onResize);
   },
 
   render: function() {
+    if (typeof this.canvas !== "undefined") {
+      this.canvas.width = this.state.width;
+      this.canvas.height = this.state.height;
+    }
+
     if (this.state.actions.length > 0) {
       var actions = this.state.actions;
       var ctx = this.ctx;
@@ -50,6 +54,7 @@ var Canvas = React.createClass({
           ctx.stroke();
       });
     }
+
     return (
       <canvas
         id="board"
@@ -99,6 +104,14 @@ var Canvas = React.createClass({
 
   _onMouseUp: function(event) {
     CanvasActions.endDrawing();
+  },
+
+  _onResize: function () {
+    var canvasStyle = window.getComputedStyle(this.canvas, null);
+    this.setState({
+      width: canvasStyle.width.replace('px',''),
+      height: canvasStyle.height.replace('px','')
+    });
   }
 
 })
