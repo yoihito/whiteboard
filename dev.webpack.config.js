@@ -37,7 +37,7 @@ var config = {
     }],
     loaders: [
       { test: /\.js$/, loader: 'react-hot!jsx-loader?harmony'},
-      { test: /\.sass$/, loader: 'style-loader!css-loader!sass-loader?indentedSyntax=sass&outputStyle=expanded&'},
+      { test: /\.sass$/, loader: 'style-loader!css-loader!autoprefixer-loader?browsers=last 2 version!sass-loader?indentedSyntax=sass&outputStyle=expanded&'},
       { test: /\.css$/, loader: 'style-loader!css-loader' },
       { test: /\.(png|jpg)$/, loader: 'url-loader?limit=8192&name=[name].[ext]'},
     ]

@@ -1,14 +1,29 @@
+div
+  border: 1px solid black
+
 .app
   padding: 5px
 
-.app canvas
-  border: 1px solid black
-  width: calc(100% - 10px)
-  height: calc(100% - 10px)
+  .canvas
+    display: inline-block
+    width: 90%
+
+  #board
+    width: 100%
 
 .toolbar
+  vertical-align: top
   display: inline-block
-  width: 10%
+  width: 8%
 
-.tool
-  display: inline-block
+  .tool
+    position: relative
+    width: 100%
+    padding-top: 100%
+
+    .title
+      position: absolute
+      text-align: center
+      top: 50%
+      left: 50%
+      transform: translate(-50%, -50%)

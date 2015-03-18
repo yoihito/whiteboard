@@ -18,7 +18,7 @@ var Canvas = React.createClass({
   },
 
   componentDidMount: function() {
-    this.canvas = this.getDOMNode();
+    this.canvas = this.getDOMNode().firstChild;
     this.ctx = this.canvas.getContext("2d");
     this._onResize();
     CanvasStore.addChangeListener(this._onChange);
@@ -56,17 +56,19 @@ var Canvas = React.createClass({
     }
 
     return (
-      <canvas
-        id="board"
-        onTouchStart={this._onTouchStart}
-        onMouseDown={this._onMouseDown}
-        onMouseMove={this._onMouseMove}
-        onTouchMove={this._onTouchMove}
-        onMouseUp={this._onMouseUp}
-        onMouseLeave={this._onMouseUp}
-        onTouchEnd={this._onTouchEnd}
-      >
-      </canvas>
+      <div className="canvas">
+        <canvas
+          id="board"
+          onTouchStart={this._onTouchStart}
+          onMouseDown={this._onMouseDown}
+          onMouseMove={this._onMouseMove}
+          onTouchMove={this._onTouchMove}
+          onMouseUp={this._onMouseUp}
+          onMouseLeave={this._onMouseUp}
+          onTouchEnd={this._onTouchEnd}
+        >
+        </canvas>
+      </div>
     );
   },
 
