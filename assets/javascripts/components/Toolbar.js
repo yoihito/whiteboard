@@ -6,9 +6,9 @@ var Toolbar = React.createClass({
   render: function() {
     return (
       <div className="toolbar">
-        <Tool type="pencil" />
-        <Tool type="color chooser" />
-        <Tool type="eraser" />
+        <Tool type="PENCIL" />
+        <Tool type="COLOR_CHOOSER" />
+        <Tool type="ERASER" />
       </div>
     );
   }

@@ -4,12 +4,15 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AppConstants = require('../constants/AppConstants');
 var CHANGE_EVENT = AppConstants.CHANGE_EVENT;
 var ActionTypes = AppConstants.ActionTypes;
+var ToolTypes = AppConstants.ToolTypes;
+var Tools = AppConstants.Tools;
 var SocketActionTypes = AppConstants.SocketActionTypes;
 
 var _actions = [];
 var _remotes = {};
 var _mouseDown = false;
 var _localActionId;
+var _tool = Tools.PENCIL;
 
 function getLastActionId() {
   return _actions.length - 1;
@@ -17,6 +20,7 @@ function getLastActionId() {
 
 function newAction(point) {
   _actions.push({
+    tool: _tool,
     points: [point]
   });
 }
@@ -76,6 +80,19 @@ var CanvasStore = assign({}, EventEmitter.prototype, {
       case ActionTypes.END_DRAWING:
         _mouseDown = false;
         CanvasStore.emitChange();
+      break;
+
+      case ActionTypes.CHANGE_TOOL:
+        console.log(action.tool);
+        switch (action.tool){
+          case ToolTypes.PENCIL:
+            _tool = Tools.PENCIL;
+          break;
+          case ToolTypes.ERASER:
+            _tool = Tools.ERASER;
+          break;
+          default:
+        }
       break;
 
       case SocketActionTypes.REMOTE_BEGIN_DRAWING:
