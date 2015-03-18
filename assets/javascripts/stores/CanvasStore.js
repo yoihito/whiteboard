@@ -7,6 +7,7 @@ var ActionTypes = AppConstants.ActionTypes;
 var ToolTypes = AppConstants.ToolTypes;
 var Tools = AppConstants.Tools;
 var SocketActionTypes = AppConstants.SocketActionTypes;
+var Socket = require('../utils/socket');
 
 var _actions = [];
 var _remotes = {};
@@ -18,9 +19,9 @@ function getLastActionId() {
   return _actions.length - 1;
 }
 
-function newAction(point) {
+function newAction(tool, point) {
   _actions.push({
-    tool: _tool,
+    tool: tool,
     points: [point]
   });
 }
@@ -65,20 +66,23 @@ var CanvasStore = assign({}, EventEmitter.prototype, {
 
       case ActionTypes.BEGIN_DRAWING:
         _mouseDown = true;
-        newAction({x: action.x, y: action.y});
+        newAction(_tool, {x: action.x, y: action.y});
         updateLocalAction();
+        Socket.beginDrawing({options:{ tool: _tool}, coordinates:{ x: action.x, y: action.y }});
         CanvasStore.emitChange();
       break;
 
       case ActionTypes.MOVE_CURSOR:
         if (CanvasStore.getLeftButtonState()) {
           pushPointToAction(_localActionId, {x: action.x, y: action.y});
+          Socket.moveCursor({coordinates: {x: action.x, y: action.y}});
           CanvasStore.emitChange();
         }
       break;
 
       case ActionTypes.END_DRAWING:
         _mouseDown = false;
+        Socket.endDrawing();
         CanvasStore.emitChange();
       break;
 
@@ -97,16 +101,18 @@ var CanvasStore = assign({}, EventEmitter.prototype, {
 
       case SocketActionTypes.REMOTE_BEGIN_DRAWING:
         var message = action.message;
-        newAction(message.point);
+        var data = message.data;
+        newAction(data.options.tool, data.coordinates);
         updateRemotesAction(message.from);
         CanvasStore.emitChange();
       break;
 
       case SocketActionTypes.REMOTE_MOVE_CURSOR:
         var message = action.message;
+        var data = message.data;
         var remotesActionId = _remotes[message.from];
         if (typeof remotesActionId !== "undefined") {
-          pushPointToAction(remotesActionId, message.point);
+          pushPointToAction(remotesActionId, data.coordinates);
           CanvasStore.emitChange();
         }
       break;

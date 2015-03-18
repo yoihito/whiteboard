@@ -47,6 +47,7 @@ var Canvas = React.createClass({
           ctx.lineJoin = "round";
           ctx.lineWidth = 5;
           ctx.strokeStyle = action.tool.color;
+          ctx.fillStyle = action.tool.color;
           ctx.moveTo(points[0].x, points[0].y);
           ctx.fillRect(points[0].x-5, points[0].y-5, 5, 5);
           _.each(points, function(point) {

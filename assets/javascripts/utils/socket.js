@@ -15,12 +15,12 @@ socket.on(SocketActionTypes.REMOTE_END_DRAWING, function (message) {
 });
 
 module.exports = {
-  beginDrawing: function (point) {
-    socket.emit(SocketActionTypes.REMOTE_BEGIN_DRAWING, point);
+  beginDrawing: function (message) {
+    socket.emit(SocketActionTypes.REMOTE_BEGIN_DRAWING, message);
   },
 
-  moveCursor: function (point) {
-    socket.emit(SocketActionTypes.REMOTE_MOVE_CURSOR, point);
+  moveCursor: function (message) {
+    socket.emit(SocketActionTypes.REMOTE_MOVE_CURSOR, message);
   },
 
   endDrawing: function () {

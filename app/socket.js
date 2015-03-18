@@ -46,7 +46,7 @@ var SockServer = function(server) {
         emitAction(
           socket,
           e,
-          {from: socket.id, point: message}
+          {from: socket.id, data: message}
         )
       );
     });
